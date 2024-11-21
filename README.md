@@ -214,3 +214,29 @@ table ip filter {
        tcp dport 22 dnat to 192.168.4.10:1001
 
 
+
+
+
+Configura un servei NAT per a emmascarar les xarxes Personal1 i Personal2 al Server 1.
+table inet filter
+  chain input {
+        type filter hook input priority O; policy drop;
+  chain forward{
+        type filter hook forward priority 0; policg drop;
+        ct state established,related accept
+        ip saddr {192.168.0.0/23, 192.168.2.128/26} olf "enp1so"
+
+  chain output
+        type filter hook output priority 0; policy drop;
+
+
+table ip nat {
+  chain postrouting {
+    type nat hook postrouting priority 100; policy accept;
+    ip saddr 192.168.0.0/23 oif "enp1s0"
+    ip saddr 192.168.2.128/26 oif "enp1s0"
+
+
+
+
+  sudo nft -f /etc/nftables.conf
