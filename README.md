@@ -35,7 +35,8 @@ Una vez configurado los clientes, tendremos que configurar las rutas estáticas 
 
 En Server 1, habilitamos el reenvio de IP 
 sudo sysctl -w net.ipv4.ip_forward=1
- se añadirá una ruta para que todo el tráfico dirigido a la subred 192.168.3.0/24 pase por 192.168.2.2 que es el otro servidor
+se añadirá una ruta para que todo el tráfico dirigido a la subred 192.168.3.0/24 pase por 192.168.2.2 que es el otro servidor
+
 sudo ip route add 192.168.3.0/24 via 192.168.2.2 dev enp3s0
 
 Ahora en Server 2 haremos exactamente lo mismo, pero al revés una ruta para que todo el tráfico dirigido a la subred 192.168.1.0/24 pase por 192.168.2.1
