@@ -1,6 +1,8 @@
   Exercici 1
 Configura les diferents interfaces del servidor per a que tinguin les IP estàtiques indicades a la imatge. Veure configuració d’interfaces a través de netplan (fitxer /etc/netplan/*.yaml).
-Primero debemos saber el nombre de nuestras interfaces de red, por lo tanto, utilizamos el comando ip a
+Primero debemos saber el nombre de nuestras interfaces de red, por lo tanto, utilizamos el comando 
+
+ip a
 
 Accedemos al archivo con sudo nano y lo modificamos de la siguiente manera para establecer las IPs fijas
 Después de modificar el archivo Ctrl + O, Enter y Ctrl + X para guardar cambios y realizamos el siguiente comando sudo netplan apply para aplicar los cambios guardados.
@@ -8,12 +10,16 @@ Verificamos que se han aplicado correctamente con ip a
 
 Exercici 2
 Configura el paràmetre IPv4.forwarding a “1” per a que el servidor redirigeixi les sol·licituds IP com un router.
-Accedemos al archivo sudo nano /etc/sysctl.conf descomenta la línea o añade en caso de que no esté 
+Accedemos al archivo 
+sudo nano /etc/sysctl.conf 
+descomenta la línea o añade en caso de que no esté 
 
 net.ipv4.ip_forward=1
 
 Después de modificar el archivo Ctrl + O, Enter y Ctrl + X para guardar cambios y 
-aplica los cambios con sudo sysctl -p
+aplica los cambios con 
+
+sudo sysctl -p
 
 Part 2: Configura una xarxa
 Exercici 1
@@ -25,21 +31,31 @@ Y configuramos el archivo yaml
 Después de modificar el archivo Ctrl + O, Enter y Ctrl + X para guardar cambios y realizamos el siguiente comando sudo netplan apply para aplicar los cambios guardados.
 Verificamos que se han aplicado correctamente con ip a
 
-Accedemos al archivo sudo nano /etc/sysctl.conf descomenta la línea o añade en caso de que no esté 
+Accedemos al archivo 
+
+sudo nano /etc/sysctl.conf 
+
+descomenta la línea o añade en caso de que no esté 
 net.ipv4.ip_forward=1
+
 Después de modificar el archivo Ctrl + O, Enter y Ctrl + X para guardar cambios y 
-aplica los cambios con sudo sysctl -p
+aplica los cambios con 
+
+sudo sysctl -p
 
 Ahora creamos dos máquinas clientes y cada una tendrá su interfaz de red y le asignaremos una IP manualmente.
 Una vez configurado los clientes, tendremos que configurar las rutas estáticas de los servidores tanto del 1 como del 2.
 
 En Server 1, habilitamos el reenvio de IP 
+
 sudo sysctl -w net.ipv4.ip_forward=1
+
 se añadirá una ruta para que todo el tráfico dirigido a la subred 192.168.3.0/24 pase por 192.168.2.2 que es el otro servidor
 
 sudo ip route add 192.168.3.0/24 via 192.168.2.2 dev enp3s0
 
 Ahora en Server 2 haremos exactamente lo mismo, pero al revés una ruta para que todo el tráfico dirigido a la subred 192.168.1.0/24 pase por 192.168.2.1
+
 sudo ip route add 192.168.1.0/24 via 192.168.2.1 dev enp2s0
 
 Configurado ya esto, verificamos la conectividad mediante ping entre las máquinas a ver si se ven.
@@ -74,6 +90,8 @@ table inet nat{
         type nat hook postrouting priority 100; policy accept;
         ip saddr 192.168.1.0/24 oif "enp3so" masquerade
 
+Aplicar las reglas:
+sudo nft -f /etc/nftables.conf
         
 Guardamos el archivo con CTRL + O y ENTER,  CTRL + X para salir del archivo. Ahora aplicamos las reglas con el comando: sudo nft -f /etc/nftables.conf
 
@@ -135,6 +153,10 @@ table ip nat {
        type nat hook postrouting priority 100; policy accept;
        oifname "enp3s0" ip saddr 192.168.4.0/24 masquerade
 
+
+Aplicar las reglas:
+sudo nft -f /etc/nftables.conf
+
 Eliminar la red Personal3 de la tabla de rutas en Server 1
 network :
   ethernets:
@@ -155,6 +177,7 @@ network :
 version: 2
 
 Para verificar que la NAT está funcionando y que Personal3 no está en la tabla de rutas, verificamo las reglas nftables y verificamos la rutas actuales
+
 ip route
 
 
@@ -168,6 +191,9 @@ table ip nat {
     chain postrouting {
        type nat hook postrouting priority 100; policy accept;
        oifname "enp2s0" ip saddr 192.168.3.0/24 masquerade
+
+Aplicar las reglas:
+sudo nft -f /etc/nftables.conf
 
 Exercici 11
 Configura el reenviament de ports del Server1 per a que les connexions entrants per Personal 2 pel port 22 siguin redirigides al Client1 pel port 1001.
