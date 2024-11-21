@@ -1,4 +1,4 @@
-![Logo del proyecto](logo.png)
+
 
   
 
