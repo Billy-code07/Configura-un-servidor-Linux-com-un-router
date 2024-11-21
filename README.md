@@ -1,6 +1,6 @@
 
 
-  
+  ![Logo del proyecto](logo.png)
 
   Exercici 1
 Configura les diferents interfaces del servidor per a que tinguin les IP estàtiques indicades a la imatge. Veure configuració d’interfaces a través de netplan (fitxer /etc/netplan/*.yaml).
